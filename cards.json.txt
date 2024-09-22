@@ -4,90 +4,119 @@
             "topics": [
                 "Describe a typical family dinner in your culture.",
                 "What is a memorable family tradition?",
-                "How do you balance work and home life?"
+                "How do you balance work and home life?",
+                "A funny moment during a family vacation was...",
+                "The secret to a happy family is..."
             ],
             "responses": [
-                "Sharing traditional recipes.",
-                "Celebrating cultural festivals.",
-                "Daily family routines.",
-                "Planning family vacations.",
-                "Balancing work and hobbies.",
-                "Supporting each other's goals."
+                "Eating pizza for breakfast because why not?",
+                "Dancing in the living room every Sunday.",
+                "Hiring a personal chef to handle chaos.",
+                "Playing board games until someone falls asleep.",
+                "Having a pet that steals everyone's snacks.",
+                "Celebrating holidays with mismatched costumes."
             ]
         },
-        "Science and Technology": {
+        "Media and Films": {
+            "topics": [
+                "The most overrated movie of all time is...",
+                "A plot twist that made me laugh was...",
+                "If I could be a character in any film, I would be...",
+                "The worst sequel ever was...",
+                "A movie that perfectly describes my life is..."
+            ],
+            "responses": [
+                "A superhero who can’t find his keys.",
+                "Aliens invading with bad puns.",
+                "A detective who solves crimes with interpretive dance.",
+                "A romantic comedy in outer space.",
+                "A horror movie where the monster forgets why it's scary.",
+                "A documentary about my sock collection."
+            ]
+        },
+        "Technology": {
             "topics": [
                 "The future of renewable energy lies in...",
-                "Innovations in artificial intelligence...",
-                "The impact of social media on society..."
+                "Innovations in artificial intelligence could lead to...",
+                "The impact of social media on society is...",
+                "If robots took over household chores, I would...",
+                "The most useless tech invention is..."
             ],
             "responses": [
-                "Harnessing solar power more efficiently.",
-                "Developing smarter AI algorithms.",
-                "Connecting people worldwide.",
-                "Advancements in medical technology.",
-                "Improving communication tools.",
-                "Enhancing data security."
+                "Solar-powered selfie sticks.",
+                "AI that writes bad puns on demand.",
+                "People talking to their phones like it's a pet.",
+                "Teaching robots how to do the cha-cha.",
+                "Smart toasters that burn your breakfast artistically.",
+                "Virtual reality glasses for reality avoidance."
             ]
         },
-        "Education and Learning": {
-            "topics": [
-                "The importance of critical thinking in education.",
-                "How technology is changing the classroom.",
-                "Balancing academics and extracurricular activities."
-            ],
-            "responses": [
-                "Interactive online classes.",
-                "Group study sessions.",
-                "Access to diverse learning materials.",
-                "Encouraging creative problem-solving.",
-                "Promoting lifelong learning habits.",
-                "Integrating multimedia resources."
-            ]
-        },
-        "Health and Wellness": {
-            "topics": [
-                "Maintaining a balanced diet involves...",
-                "Regular physical exercise benefits...",
-                "Mental health awareness is crucial because..."
-            ],
-            "responses": [
-                "Incorporating various food groups.",
-                "Boosting overall well-being.",
-                "Reducing stress and anxiety.",
-                "Enhancing physical fitness.",
-                "Promoting healthy lifestyle habits.",
-                "Ensuring access to healthcare services."
-            ]
-        },
-        "Environmental Issues": {
+        "Environment": {
             "topics": [
                 "Reducing plastic waste can be achieved by...",
                 "Conserving natural resources requires...",
-                "Addressing climate change involves..."
+                "Addressing climate change involves...",
+                "A bizarre way to promote recycling is...",
+                "The strangest eco-friendly invention is..."
             ],
             "responses": [
-                "Implementing recycling programs.",
-                "Promoting sustainable living.",
-                "Investing in renewable energy.",
-                "Protecting endangered species.",
-                "Raising public awareness.",
-                "Encouraging eco-friendly practices."
+                "Replacing plastic bags with giant leaves.",
+                "Teaching trees to hug each other.",
+                "Inventing biodegradable unicorns.",
+                "Hosting dance-offs for recycling enthusiasts.",
+                "Solar-powered skateboards for penguins.",
+                "Eco-friendly glitter made from recycled laughter."
             ]
         },
-        "Cultural Diversity": {
+        "Travel and Tourism": {
             "topics": [
-                "Respecting different traditions means...",
-                "Learning new languages helps in...",
-                "Embracing multiculturalism leads to..."
+                "My dream vacation destination is...",
+                "A funny travel mishap I experienced was...",
+                "The best way to explore a new city is by...",
+                "If I could teleport, I would visit...",
+                "The most unusual souvenir I ever got was..."
             ],
             "responses": [
-                "Fostering mutual understanding.",
-                "Enhancing communication skills.",
-                "Promoting global harmony.",
-                "Celebrating diverse perspectives.",
-                "Encouraging inclusive communities.",
-                "Expanding personal horizons."
+                "A beach made entirely of marshmallows.",
+                "Getting lost in a city where everyone speaks emoji.",
+                "Exploring by riding a giant rubber duck.",
+                "Teleporting to the center of a donut.",
+                "Collecting souvenir air from different altitudes.",
+                "Buying a hat for my pet parrot in Tokyo."
+            ]
+        },
+        "Shopping and Consumer Society": {
+            "topics": [
+                "The best thing to buy online is...",
+                "A bizarre shopping trend I’ve noticed is...",
+                "If I had unlimited money, I would shop for...",
+                "The worst customer service experience was...",
+                "A product that should never exist is..."
+            ],
+            "responses": [
+                "Invisible cloaks for everyday use.",
+                "Selfie sticks for pets.",
+                "An endless supply of bubble wrap.",
+                "A shirt that changes colors based on your mood.",
+                "Smart refrigerators that judge your snack choices.",
+                "Shoes with built-in teleporters."
+            ]
+        },
+        "Health, Fitness, and Sport": {
+            "topics": [
+                "Maintaining a balanced diet involves...",
+                "Regular physical exercise benefits...",
+                "Mental health awareness is crucial because...",
+                "A funny moment during a sports game was...",
+                "If I could have any superpower for fitness, it would be..."
+            ],
+            "responses": [
+                "Eating ice cream for every meal responsibly.",
+                "Running away from your responsibilities for exercise.",
+                "Meditating while juggling flaming torches.",
+                "Tripping over your own feet during a race.",
+                "Having the ability to lift cars effortlessly.",
+                "Teleporting to the gym whenever you want."
             ]
         }
     }
