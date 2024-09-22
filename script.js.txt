@@ -1,220 +1,270 @@
-// Fetch card data from cards.json
+// Fetch card data and word list from JSON files
 let cardData = {};
+let wordList = {};
 
-fetch('cards.json')
-    .then(response => response.json())
-    .then(data => {
-        cardData = data.units;
-        initializeGame();
-    })
-    .catch(error => console.error('Error loading card data:', error));
+Promise.all([
+    fetch('cards.json').then(response => response.json()),
+    fetch('words.json').then(response => response.json())
+]).then(data => {
+    cardData = data[0].units;
+    wordList = data[1].words;
+    initializeGame();
+}).catch(error => console.error('Error loading data:', error));
 
-// Initialize game after loading card data
+// Initialize game after loading data
 function initializeGame() {
-    // Mode Selection Buttons
-    const singlePlayerBtn = document.getElementById('single-player-btn');
-    const multiplayerBtn = document.getElementById('multiplayer-btn');
+    const startGameButton = document.getElementById('start-game-button');
+    const wordListButton = document.getElementById('word-list-button');
 
-    singlePlayerBtn.addEventListener('click', () => {
-        document.getElementById('mode-selection').style.display = 'none';
-        document.getElementById('single-player').style.display = 'block';
-        startSinglePlayer();
+    startGameButton.addEventListener('click', startGame);
+    wordListButton.addEventListener('click', openWordListModal);
+
+    // Modal functionality
+    const modal = document.getElementById('word-list-modal');
+    const closeButton = document.querySelector('.close-button');
+
+    closeButton.addEventListener('click', () => {
+        modal.style.display = 'none';
     });
 
-    multiplayerBtn.addEventListener('click', () => {
-        document.getElementById('mode-selection').style.display = 'none';
-        document.getElementById('multiplayer').style.display = 'block';
+    window.addEventListener('click', (event) => {
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
     });
+}
+
+function startGame() {
+    const playerCount = parseInt(document.getElementById('player-count').value);
+    const selectedTopic = document.getElementById('topic-select').value;
+
+    if (playerCount === 1) {
+        // Start Single Player Mode
+        document.getElementById('landing-screen').style.display = 'none';
+        document.getElementById('single-player-mode').style.display = 'block';
+        startSinglePlayer(selectedTopic);
+    } else {
+        // Start Multiplayer Mode
+        document.getElementById('landing-screen').style.display = 'none';
+        document.getElementById('multiplayer-mode').style.display = 'block';
+        startMultiplayer(playerCount, selectedTopic);
+    }
 }
 
 // ==================== Single Player Mode ====================
 
-function startSinglePlayer() {
-    const singlePlayerTopics = getAllTopics();
+function startSinglePlayer(topic) {
+    const topics = cardData[topic].topics;
+    const responses = cardData[topic].responses;
+
     let currentTopicIndex = 0;
+    const totalTopics = topics.length;
 
     const topicCard = document.getElementById('sp-topic-card');
     const responseOptions = document.getElementById('sp-response-options');
-    const nextButton = document.getElementById('sp-next-button');
     const feedback = document.getElementById('sp-feedback');
+    const nextButton = document.getElementById('sp-next-button');
+    const timerDisplay = document.getElementById('sp-time');
+
+    let timer;
+    let timeLeft = 30;
 
     function displayTopic() {
-        if(currentTopicIndex >= singlePlayerTopics.length){
-            topicCard.textContent = "Game Over! Well done!";
+        if (currentTopicIndex >= totalTopics) {
+            topicCard.textContent = "🎉 Game Over! Well done! 🎉";
             responseOptions.innerHTML = "";
             nextButton.style.display = 'none';
+            clearInterval(timer);
             return;
         }
-        const topic = singlePlayerTopics[currentTopicIndex];
-        topicCard.textContent = `Topic: ${topic.text}`;
-        displayResponses(topic.unit);
-    }
 
-    function displayResponses(unit) {
+        const currentTopic = topics[currentTopicIndex];
+        topicCard.textContent = `📝 Topic: ${currentTopic}`;
+        feedback.textContent = "";
+        nextButton.style.display = 'none';
+
+        // Shuffle and select 4 random responses
+        const shuffledResponses = shuffleArray(responses);
+        const selectedResponses = shuffledResponses.slice(0, 4);
+
         responseOptions.innerHTML = "";
-        const options = getRandomResponses(unit, 4);
-        options.forEach(response => {
+        selectedResponses.forEach(response => {
             const button = document.createElement('button');
             button.classList.add('option');
             button.textContent = response;
             button.onclick = () => {
-                feedback.textContent = `You selected: "${response}"`;
+                feedback.textContent = `✅ You selected: "${response}"`;
+                clearInterval(timer);
+                nextButton.style.display = 'inline-block';
             };
             responseOptions.appendChild(button);
         });
+
+        // Start timer
+        timeLeft = 30;
+        timerDisplay.textContent = timeLeft;
+        clearInterval(timer);
+        timer = setInterval(() => {
+            timeLeft--;
+            timerDisplay.textContent = timeLeft;
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                feedback.textContent = "⏰ Time's up! Moving to the next topic.";
+                nextButton.style.display = 'inline-block';
+            }
+        }, 1000);
     }
 
     nextButton.onclick = () => {
         currentTopicIndex++;
-        feedback.textContent = "";
         displayTopic();
     };
 
     displayTopic();
 }
 
-// Get all topics with unit information
-function getAllTopics() {
-    let allTopics = [];
-    for (let unit in cardData) {
-        cardData[unit].topics.forEach(topic => {
-            allTopics.push({ unit: unit, text: topic });
-        });
-    }
-    // Shuffle topics
-    return shuffleArray(allTopics);
-}
-
-// Get random responses for a unit
-function getRandomResponses(unit, count) {
-    const responses = cardData[unit].responses;
-    return shuffleArray(responses).slice(0, count);
-}
-
-// Shuffle an array
-function shuffleArray(array) {
-    let currentIndex = array.length, temporaryValue, randomIndex;
-  
-    // While there remain elements to shuffle...
-    while (0 !== currentIndex) {
-  
-      // Pick a remaining element...
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex -= 1;
-  
-      // And swap it with the current element.
-      temporaryValue = array[currentIndex];
-      array[currentIndex] = array[randomIndex];
-      array[randomIndex] = temporaryValue;
-    }
-  
-    return array;
-}
-
 // ==================== Multiplayer Mode ====================
 
-function setupMultiplayer() {
-    const mpStartButton = document.getElementById('mp-start-button');
-    const playerCountInput = document.getElementById('player-count');
-    const mpSetup = document.getElementById('mp-setup');
-    const mpGame = document.getElementById('mp-game');
-    const currentPlayerDiv = document.getElementById('current-player');
-    const mpTopicCard = document.getElementById('mp-topic-card');
-    const mpResponseOptions = document.getElementById('mp-response-options');
-    const mpNextButton = document.getElementById('mp-next-button');
-    const mpFeedback = document.getElementById('mp-feedback');
+function startMultiplayer(playerCount, topic) {
+    const topics = cardData[topic].topics;
+    const responses = cardData[topic].responses;
 
-    let players = [];
     let currentPlayerIndex = 0;
-    let multiplayerTopics = [];
+    const players = [];
+    for (let i = 1; i <= playerCount; i++) {
+        players.push({
+            name: `Player ${i}`,
+            score: 0,
+            selectedResponse: null
+        });
+    }
 
-    mpStartButton.addEventListener('click', () => {
-        let playerCount = parseInt(playerCountInput.value);
-        if(isNaN(playerCount) || playerCount < 2 || playerCount > 6){
-            alert("Please enter a valid number of players (2-6).");
+    const totalTopics = topics.length;
+    const currentPlayerDiv = document.getElementById('mp-current-player');
+    const topicCard = document.getElementById('mp-topic-card');
+    const responseOptions = document.getElementById('mp-response-options');
+    const feedback = document.getElementById('mp-feedback');
+    const nextButton = document.getElementById('mp-next-button');
+    const timerDisplay = document.getElementById('mp-time');
+
+    let timer;
+    let timeLeft = 30;
+
+    function displayPlayerTurn() {
+        if (currentPlayerIndex >= players.length || currentPlayerIndex >= totalTopics) {
+            endMultiplayerGame();
             return;
         }
 
-        // Initialize players
-        players = [];
-        for(let i=1; i<=playerCount; i++){
-            players.push({ name: `Player ${i}`, score: 0, selectedResponse: null });
-        }
+        const currentPlayer = players[currentPlayerIndex];
+        currentPlayerDiv.textContent = `${currentPlayer.name}'s Turn 🕹️`;
 
-        // Shuffle and set topics
-        multiplayerTopics = getAllTopics();
-        shuffleArray(multiplayerTopics);
+        const currentTopic = topics[currentPlayerIndex];
+        topicCard.textContent = `📝 Topic: ${currentTopic}`;
 
-        mpSetup.style.display = 'none';
-        mpGame.style.display = 'block';
+        feedback.textContent = "";
+        nextButton.style.display = 'none';
 
-        startRound();
-    });
+        // Shuffle and select 4 random responses
+        const shuffledResponses = shuffleArray(responses);
+        const selectedResponses = shuffledResponses.slice(0, 4);
 
-    function startRound() {
-        if(currentPlayerIndex >= multiplayerTopics.length){
-            endGame();
-            return;
-        }
-
-        let currentPlayer = players[currentPlayerIndex];
-        currentPlayerDiv.textContent = `${currentPlayer.name}'s Turn`;
-        let topic = multiplayerTopics[currentPlayerIndex];
-        mpTopicCard.textContent = `Topic: ${topic.text}`;
-        mpResponseOptions.innerHTML = "";
-        mpFeedback.textContent = "";
-
-        // Generate response options
-        let responseOptions = getRandomResponses(topic.unit, 4);
-        responseOptions.forEach(response => {
+        responseOptions.innerHTML = "";
+        selectedResponses.forEach(response => {
             const button = document.createElement('button');
             button.classList.add('option');
             button.textContent = response;
             button.onclick = () => {
                 currentPlayer.selectedResponse = response;
-                mpFeedback.textContent = `${currentPlayer.name} selected: "${response}"`;
-                // Update score (for simplicity, +1 point per selection)
-                currentPlayer.score += 1;
+                currentPlayer.score += 1; // Simple scoring: +1 per selection
+                feedback.textContent = `${currentPlayer.name} selected: "${response}"`;
+                clearInterval(timer);
+                nextButton.style.display = 'inline-block';
             };
-            mpResponseOptions.appendChild(button);
+            responseOptions.appendChild(button);
         });
 
-        mpNextButton.onclick = () => {
-            if(!currentPlayer.selectedResponse){
-                alert("Please select a response before proceeding.");
-                return;
+        // Start timer
+        timeLeft = 30;
+        timerDisplay.textContent = timeLeft;
+        clearInterval(timer);
+        timer = setInterval(() => {
+            timeLeft--;
+            timerDisplay.textContent = timeLeft;
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                feedback.textContent = "⏰ Time's up! Moving to the next player.";
+                nextButton.style.display = 'inline-block';
             }
-            currentPlayerIndex++;
-            startRound();
-        };
+        }, 1000);
     }
 
-    function endGame() {
-        mpTopicCard.textContent = "Game Over! Scores:";
-        mpResponseOptions.innerHTML = "";
-        mpNextButton.style.display = 'none';
-        let scores = players.map(player => `${player.name}: ${player.score} points`).join('<br>');
-        mpFeedback.innerHTML = scores;
+    nextButton.onclick = () => {
+        currentPlayerIndex++;
+        displayPlayerTurn();
+    };
+
+    function endMultiplayerGame() {
+        topicCard.textContent = "🎉 Game Over! Here are the scores: 🎉";
+        responseOptions.innerHTML = "";
+        nextButton.style.display = 'none';
+        currentPlayerDiv.textContent = "";
+
+        let scoresHTML = "<ul>";
+        players.forEach(player => {
+            scoresHTML += `<li>${player.name}: ${player.score} points</li>`;
+        });
+        scoresHTML += "</ul>";
+        feedback.innerHTML = scoresHTML;
+
+        // Optionally, highlight the winner
+        const highestScore = Math.max(...players.map(p => p.score));
+        const winners = players.filter(p => p.score === highestScore);
+        if (winners.length === 1) {
+            feedback.innerHTML += `<p>🏆 Winner: ${winners[0].name}!</p>`;
+        } else {
+            const winnerNames = winners.map(w => w.name).join(', ');
+            feedback.innerHTML += `<p>🏆 It's a tie between: ${winnerNames}!</p>`;
+        }
     }
+
+    displayPlayerTurn();
 }
 
-// Initialize Multiplayer Setup
-function initializeMultiplayer() {
-    const multiplayerMode = document.getElementById('multiplayer');
-    const mpStartButton = document.getElementById('mp-start-button');
+// ==================== Utility Functions ====================
 
-    mpStartButton.addEventListener('click', () => {
-        setupMultiplayer();
-    });
+// Shuffle an array (Fisher-Yates Shuffle)
+function shuffleArray(array) {
+    let currentIndex = array.length, temporaryValue, randomIndex;
+
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+
+        // And swap it with the current element.
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
+    }
+
+    return array;
 }
 
-// Call multiplayer initialization
-function setupMultiplayerMode() {
-    const mpStartButton = document.getElementById('mp-start-button');
-    mpStartButton.addEventListener('click', setupMultiplayer);
-}
+// ==================== Word List / Translation Modal ====================
 
-// Ensure multiplayer setup is called after data is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    initializeMultiplayer();
-});
+function openWordListModal() {
+    const modal = document.getElementById('word-list-modal');
+    const wordListElement = document.getElementById('word-list');
+    wordListElement.innerHTML = "";
+
+    for (const [word, definition] of Object.entries(wordList)) {
+        const li = document.createElement('li');
+        li.innerHTML = `<strong>${word}:</strong> ${definition}`;
+        wordListElement.appendChild(li);
+    }
+
+    modal.style.display = 'flex';
+}
