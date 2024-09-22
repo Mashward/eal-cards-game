@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EAL Cards Game</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="game-container">
+        <h1>EAL Cards Game</h1>
+        <div id="mode-selection">
+            <button id="single-player-btn">Single Player</button>
+            <button id="multiplayer-btn">Multiplayer</button>
+        </div>
+
+        <div id="single-player" class="mode" style="display: none;">
+            <div id="single-player-game">
+                <h2>Single Player Mode</h2>
+                <div id="sp-topic-card" class="card">
+                    <!-- Topic will be displayed here -->
+                </div>
+                <div id="sp-response-options" class="options">
+                    <!-- Response options will be displayed here -->
+                </div>
+                <button id="sp-next-button">Next Topic</button>
+                <div id="sp-feedback"></div>
+            </div>
+        </div>
+
+        <div id="multiplayer" class="mode" style="display: none;">
+            <h2>Multiplayer Mode</h2>
+            <div id="mp-setup">
+                <label for="player-count">Number of Players (2-6): </label>
+                <input type="number" id="player-count" min="2" max="6" value="2">
+                <button id="mp-start-button">Start Game</button>
+            </div>
+            <div id="mp-game" style="display: none;">
+                <div id="current-player" class="current-player">
+                    <!-- Current player's turn -->
+                </div>
+                <div id="mp-topic-card" class="card">
+                    <!-- Topic will be displayed here -->
+                </div>
+                <div id="mp-response-options" class="options">
+                    <!-- Response options will be displayed here -->
+                </div>
+                <button id="mp-next-button">Next Player</button>
+                <div id="mp-feedback"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
